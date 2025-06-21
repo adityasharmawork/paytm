@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const zod = require('zod');
 const { SECRET } = require('../config')
-const User = require('./user');
+const { User } = require('../db');
 
 const signupBody = zod.object({
     username: zod.string(),
