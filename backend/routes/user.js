@@ -22,7 +22,7 @@ router.post("/signup", async (req, res) => {
         });
     }
 
-    const existingUser = User.findOne({ username });
+    const existingUser = await User.findOne({ username });
 
     if(existingUser) {
         return res.status(411).json({
@@ -30,7 +30,7 @@ router.post("/signup", async (req, res) => {
         });
     }
 
-    const newUser = User.create({
+    const newUser = await User.create({
         username,
         password,
         firstName,
