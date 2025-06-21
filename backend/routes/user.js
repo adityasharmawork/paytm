@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const zod = require('zod');
 const { SECRET } = require('../config')
+const User = require('./user');
 
 const signupBody = zod.object({
     username: zod.string(),
@@ -16,8 +17,16 @@ router.post("/signup", async (req, res) => {
     const { success } = signupBody.safeParse(req.body);
     
     if(!success) {
-        res.status(411).json({
+        return res.status(411).json({
             message: "Incorrect data"
+        });
+    }
+
+    const existingUser = User.findOne({ username });
+
+    if(existingUser) {
+        return res.status(411).json({
+            message: "Username already exists"
         });
     }
     
