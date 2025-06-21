@@ -29,8 +29,17 @@ router.post("/signup", async (req, res) => {
             message: "Username already exists"
         });
     }
+
+    const newUser = User.create({
+        username,
+        password,
+        firstName,
+        lastName
+    });
+
+    const userId = newUser._id;
     
-    const token = jwt.sign({ username }, SECRET);
+    const token = jwt.sign({ userId }, SECRET);
     
     res.json({
         message: "User created successfully!",
