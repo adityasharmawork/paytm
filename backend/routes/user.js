@@ -13,7 +13,16 @@ const signupBody = zod.object({
 
 router.post("/signup", async (req, res) => {
     const { username, firstName, lastName, password } = req.body;
+    const { success } = signupBody.safeParse(req.body);
+    
+    if(!success) {
+        res.status(411).json({
+            message: "Incorrect data"
+        });
+    }
+    
     const token = jwt.sign({ username }, SECRET);
+    
     res.json({
         message: "User created successfully!",
         token
