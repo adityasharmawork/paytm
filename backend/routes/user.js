@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 
+const SECRET = require('../config');
+
 router.post("/signup", async (req, res) => {
     const { username, firstName, lastName, password } = req.body;
-    const secret = process.env.JWT_SECRET;
-    const token = jwt.sign({ username }, secret);
+    const token = jwt.sign({ username }, SECRET);
     res.json({
         message: "User created successfully!",
         token
