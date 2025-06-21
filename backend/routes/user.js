@@ -12,6 +12,11 @@ const signupBody = zod.object({
     password: zod.string()
 });
 
+const signinBody = zod.object({
+    username: zod.string(),
+    password: zod.string()
+});
+
 router.post("/signup", async (req, res) => {
     const { username, firstName, lastName, password } = req.body;
     const { success } = signupBody.safeParse(req.body);
@@ -46,5 +51,32 @@ router.post("/signup", async (req, res) => {
         token
     });
 });
+
+router.post("/signin", async (req, res) => {
+    const { username, password } = req.body;
+    
+    const { success } = signinBody.safeParse(req.body);
+
+    if(!success) {
+        return res.status(411).json({
+            message: "Error while logging in"
+        });
+    }
+
+    const existingUser = await User.findOne({ username, password });
+
+    if(!existingUser) {
+        return res.status(411).json({
+            message: "Error while logging in"
+        });
+    }
+
+    const token = jwt.sign({ userId: existingUser._id }, SECRET);
+
+    return res.json({
+        token
+    });
+});
+
 
 module.exports = router;
