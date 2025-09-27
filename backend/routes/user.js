@@ -5,6 +5,8 @@ const zod = require('zod');
 const { SECRET } = require('../config')
 const { User } = require('../db');
 
+const { authMiddleware } = require("../middleware");
+
 const signupBody = zod.object({
     username: zod.string(),
     firstName: zod.string(),
@@ -15,6 +17,12 @@ const signupBody = zod.object({
 const signinBody = zod.object({
     username: zod.string(),
     password: zod.string()
+});
+
+const updateBody = zod.object({
+    password: zod.string().optional(),
+    firstName: zod.string().optional(),
+    lastName: zod.string().optional(),
 });
 
 router.post("/signup", async (req, res) => {
@@ -75,6 +83,22 @@ router.post("/signin", async (req, res) => {
 
     return res.json({
         token
+    });
+});
+
+router.put("/", authMiddleware, async (req, res) => {
+    const { success } = updateBody.safeParse(req.body);
+
+    if(!success) {
+        return res.status(411).json({
+            message: "Error while updating information",
+        });
+    }
+
+    await User.updateOne({_id: req.userId}, req.body);
+
+    return res.json({
+        message: "Updated Successfully!",
     });
 });
 
