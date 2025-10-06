@@ -1,10 +1,10 @@
 const express = require("express");
-const rootRouter = require("./routes/index");
+const rootRouter = require("../routes/index");
 const app = express();
-const { PORT } = require('./config');
+const { PORT } = require('../config');
 const cors = require('cors');
 require('dotenv').config();
-const connectDB = require('./connectDB');
+const connectDB = require('../connectDB');
 
 app.use(cors());
 app.use(express.json());
