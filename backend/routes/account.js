@@ -27,6 +27,16 @@ router.post("/transfer", authMiddleware, async (req, res) => {
             message: "Insufficient Balance"
         });
     }
+
+    const toAccount = Account.findOne({
+        userId: to
+    });
+
+    if(!toAccount) {
+        return res.status(400).json({
+            message: "Invalid Account"
+        });
+    }
 })
 
 module.exports = router;
