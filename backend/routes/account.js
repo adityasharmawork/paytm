@@ -15,4 +15,18 @@ router.get("/balance", authMiddleware, async (req, res) => {
     });
 });
 
+router.post("/transfer", authMiddleware, async (req, res) => {
+    const {to, amount} = req.body;
+
+    const account = Account.findOne({
+        userId : req.userId
+    });
+
+    if(amount > account.balance) {
+        return res.status(400).json({
+            message: "Insufficient Balance"
+        });
+    }
+})
+
 module.exports = router;
