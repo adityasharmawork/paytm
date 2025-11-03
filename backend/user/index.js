@@ -13,7 +13,7 @@ app.use(express.json());
 
 
 app.use("/api/v1", userRouter);
-app.use("/api/v1/accounts", accountRouter);
+app.use("/api/v1/account", accountRouter);
 
 app.listen(PORT, () => {
     console.log(`Server listening on port: ${PORT}`)
