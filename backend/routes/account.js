@@ -16,6 +16,7 @@ router.get("/balance", authMiddleware, async (req, res) => {
 });
 
 router.post("/transfer", authMiddleware, async (req, res) => {
+    
     const {to, amount} = req.body;
 
     const account = Account.findOne({
@@ -37,6 +38,27 @@ router.post("/transfer", authMiddleware, async (req, res) => {
             message: "Invalid Account"
         });
     }
-})
+
+    await Account.updateOne({
+        userId: req.userId
+    }, {
+        $inc: {
+            balance : -amount
+        }
+    });
+
+    await Account.updateOne({
+        userId: to
+    }, {
+        $inc: {
+            balance : amount
+        }
+    });
+
+    return res.json({
+        message: "Transfer successful"
+    });
+
+});
 
 module.exports = router;
