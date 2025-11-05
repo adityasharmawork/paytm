@@ -1,6 +1,7 @@
 const express = require("express");
 const { authMiddleware } = require("../middleware");
 const { Account } = require("../db");
+const mongoose = require("mongoose");
 
 const router = express.Router();
 
@@ -68,38 +69,58 @@ router.post("/transfer", authMiddleware, async (req, res) => {
     
     const session = await mongoose.startSession();
 
-    session.startTransaction();
+    try {
+        session.startTransaction();
 
-    const {to, amount} = req.body;
+        const {to, amount} = req.body;
 
-    const account = Account.findOne({
-        userId: req.userId
-    }).session(session);
+        if (amount <= 0) {
+            await session.abortTransaction();
+            return res.status(400).json({
+                message: "Transfer amount must be positive"
+            });
+        }
 
-    if(!account || account.balance < amount) {
+        const account = await Account.findOne({
+            userId: req.userId
+        }).session(session);
+
+        if(!account || account.balance < amount) {
+            await session.abortTransaction();
+            return res.status(400).json({
+                message: "Insufficient balance"
+            });
+        }
+
+        const toAccount = await Account.findOne({userId : to}).session(session);
+
+        if(!toAccount) {
+            session.abortTransaction();
+            return res.status(400).json({
+                message: "Invalid Account"
+            });
+        }
+
+        await Account.updateOne({userId : req.userId}, {$inc : {balance : -amount}}).session(session);
+        await Account.updateOne({userId : to}, {$inc : {balance : amount}}).session(session);
+
+        await session.commitTransaction();
+
+        return res.json({
+            message: "Transfer Successful"
+        });
+    } catch (error) {
+        // If any error occurs, abort the transaction
         await session.abortTransaction();
-        return res.status(400).json({
-            message: "Insufficient balance"
+        console.error("Transfer failed:", error); // Log the error
+        return res.status(500).json({
+            message: "Transfer failed, please try again later."
         });
+
+    } finally {
+        // Always end the session
+        session.endSession();
     }
-
-    const toAccount = await Account.findOne({userId : to}).session(session);
-
-    if(!toAccount) {
-        session.abortTransaction();
-        return res.status(400).json({
-            message: "Invalid Account"
-        });
-    }
-
-    await Account.updateOne({userId : req.userId}, {$inc : {balance : -amount}}).session(session);
-    await Account.updateOne({userId : toAccount}, {$inc : {balance : amount}}).session(session);
-
-    await session.commitTransaction();
-
-    return res.json({
-        message: "Transfer Successful"
-    });
 
 })
 
