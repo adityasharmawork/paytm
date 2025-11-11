@@ -18,7 +18,7 @@ export default function Signup() {
                 <div className="pt-4">
                     <Button label={"Sign up"} />
                 </div>
-                <BottomWarning label={"Alreday have an account"} buttontext={"Sign in"} to={"/signin"} />
+                <BottomWarning label={"Already have an account?"} buttonText={"Sign in"} to={"/signin"} />
             </div>
         </div>
     </div>
