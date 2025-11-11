@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 export default function BottomWarning({label, buttontext, to}) {
   return (
@@ -5,9 +6,9 @@ export default function BottomWarning({label, buttontext, to}) {
         <div>
           {label}
         </div>
-        <link className="pointer underline pl-1 cursor-pointer" to={to}>
+        <Link className="pointer underline pl-1 cursor-pointer" to={to}>
           {buttontext}
-        </link>
+        </Link>
     </div>
   )
 }
