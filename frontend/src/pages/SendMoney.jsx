@@ -33,7 +33,7 @@ export default function SendMoney() {
                                     amount
                                 }, {
                                     headers: {
-                                        Authorization : "Bearer " + localStorage.getItem("token");
+                                        Authorization : "Bearer " + localStorage.getItem("token")
                                     }
                                 });
                             }}
