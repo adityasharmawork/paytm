@@ -14,6 +14,7 @@ export default function Users() {
     const [users, setUsers] = useState([]);
     const [filter, setFilter] = useState("");
 
+    // TODO : Debouncing
     useEffect(() => {
         axios.get("http://localhost:3000/api/v1/user/bulk?filter=" + filter)
             .then(response => {
@@ -27,7 +28,7 @@ export default function Users() {
             Users
         </div>
         <div className="my-2">
-            <input type="text" placeholder="Search users..." className="w-full px-2 py-1 border rounded border-slate-200"></input>
+            <input onChange={(e) => { setFilter(e.target.value) }} type="text" placeholder="Search users..." className="w-full px-2 py-1 border rounded border-slate-200"></input>
         </div>
         <div>
             {users.map(user => <User user={user} />)}
@@ -56,7 +57,7 @@ function User({user}) {
             </div>
 
             <div className="flex flex-col justify-center h-full">
-                <Button label={"Send Money"} onClick={() => {navigate("/send")}} />
+                <Button label={"Send Money"} onClick={() => {navigate("/send?id=" + user._id + "&name=" + user.firstName)}} />
             </div>
 
         </div>
