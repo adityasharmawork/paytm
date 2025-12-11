@@ -16,9 +16,9 @@ export default function SendMoney() {
                     </div>
                     <div className="space-y-4">
                         <div className="space-y-2">
-                            <Label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="amount" >
+                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="amount" >
                                 Amount (in Rs)
-                            </Label>
+                            </label>
                             <input 
                                 type="number"
                                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
